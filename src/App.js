@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import './App.css';
 import Calendar from 'react-calendar';
@@ -14,8 +14,8 @@ function App() {
   // Google Calendar ID for Virtuals Protocol
   const CALENDAR_ID = '8d9e7d11d17a0102c0beca1c071b76e993181a48aa46194173fd4739d7423f5c@group.calendar.google.com';
   
-  // Activity types we're tracking
-  const ACTIVITY_TYPES = ['Launch', 'Unstake', 'Sell'];
+  // Activity types we're tracking - use useMemo to prevent re-creation
+  const ACTIVITY_TYPES = useMemo(() => ['Launch', 'Unstake', 'Sell'], []);
 
   const fetchCalendarEvents = useCallback(async () => {
     try {
