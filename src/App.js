@@ -318,10 +318,18 @@ function App() {
             <div className="events-list">
               {events.map((event, index) => {
                 const activityType = getActivityType(event.summary);
+                const activityColor = getActivityColor(activityType);
                 return (
-                  <div key={index} className="event-card" style={{ borderLeftColor: getActivityColor(activityType) }}>
+                  <div 
+                    key={index} 
+                    className="event-card" 
+                    style={{ 
+                      '--activity-color': activityColor,
+                      borderLeftColor: activityColor 
+                    }}
+                  >
                     <div className="event-header">
-                      <span className="activity-type" style={{ backgroundColor: getActivityColor(activityType) }}>
+                      <span className="activity-type" style={{ backgroundColor: activityColor }}>
                         {activityType}
                       </span>
                       <span className="event-date">{formatDate(event.start, event.allDay)}</span>
