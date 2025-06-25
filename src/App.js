@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import './App.css';
 import Calendar from 'react-calendar';
@@ -9,7 +9,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm] = useState("");
 
   // Google Calendar ID for Virtuals Protocol
   const CALENDAR_ID = '8d9e7d11d17a0102c0beca1c071b76e993181a48aa46194173fd4739d7423f5c@group.calendar.google.com';
@@ -17,11 +17,7 @@ function App() {
   // Activity types we're tracking
   const ACTIVITY_TYPES = ['Launch', 'Unstake', 'Sell'];
 
-  useEffect(() => {
-    fetchCalendarEvents();
-  }, []);
-
-  const fetchCalendarEvents = async () => {
+  const fetchCalendarEvents = useCallback(async () => {
     try {
       setLoading(true);
       
@@ -72,7 +68,11 @@ function App() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [CALENDAR_ID, ACTIVITY_TYPES]);
+
+  useEffect(() => {
+    fetchCalendarEvents();
+  }, [fetchCalendarEvents]);
 
   const parseICalData = (icalData) => {
     const events = [];
@@ -162,17 +162,6 @@ function App() {
       });
     }
   };
-
-  // Get all event dates as strings for highlighting
-  const eventDates = events.map(event => event.allDay ? event.start : (new Date(event.start).toISOString().slice(0,10)));
-
-  // Events for the selected day
-  const eventsForSelectedDate = selectedDate
-    ? events.filter(event => {
-        const eventDate = event.allDay ? event.start : (new Date(event.start).toISOString().slice(0,10));
-        return eventDate === selectedDate;
-      })
-    : [];
 
   // Filter events by search term
   const filteredEvents = events.filter(event =>
